@@ -47,6 +47,9 @@ class Soldier:
         print("Soldier dict", file=sys.stderr)
         print(Soldier.soldiers, file=sys.stderr)
 
+    def GetSoldierDict(self):
+        return Soldier.soldiers
+
 
 class NightWar:
     my_id = int(input())
@@ -92,8 +95,9 @@ class NightWar:
         # Write an action using print
         # To debug: print("Debug messages...", file=sys.stderr, flush=True)
         # print any of actions - WAIT | MOVE <soldierId> <direction> | ATTACK <soldierID> <soldierId to attack on> | LATER > UPGRADE <id> | DEGRADE <opponent id> | SUICIDE <id>
-        print("WAIT", file=sys.stderr)
         print("WAIT")
+
+        #
 
 game = NightWar()
 
