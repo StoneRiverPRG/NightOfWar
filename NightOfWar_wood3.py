@@ -29,10 +29,13 @@ class Board:
 
 class Soldier:
     soldier_count = 0
-    soldiers = {}
+    _my_id = 0
+    my_soldiers = {}
+    opp_soldiers = {}
 
-    def __init__(self, count):
+    def __init__(self, count, myid):
         Soldier.soldier_count = count
+        Soldier._my_id = myid
 
     def Update(self):
         for i in range(Soldier.soldier_count):
@@ -43,12 +46,16 @@ class Soldier:
         # level: Level of the soldier ignore for first league
         # direction: The side where the soldier is facing 0 = UP, 1 = LEFT , 2 = DOWN, 3 = RIGHT
             owner_id, x, y, soldier_id, level, direction = [int(j) for j in input().split()]
-            Soldier.soldiers[soldier_id] = [owner_id, x, y, level, direction]
+            if owner_id == Soldier._my_id:
+                Soldier.my_soldiers[soldier_id] = [owner_id, x, y, level, direction]
+            else:
+                Soldier.opp_soldiers[soldier_id] = [owner_id, x, y, level, direction]
+
         print("Soldier dict", file=sys.stderr)
-        print(Soldier.soldiers, file=sys.stderr)
+        print(Soldier.my_soldiers, file=sys.stderr)
 
     def GetSoldierDict(self):
-        return Soldier.soldiers
+        return Soldier.my_soldiers
 
 
 class NightWar:
@@ -59,6 +66,7 @@ class NightWar:
     opp_bucks = 0
     #block_owner = 0
     active_soldier_count = 0
+    turn = 1
 
 
     def __init__(self):
@@ -67,6 +75,8 @@ class NightWar:
 
 
     def Update(self):
+        print("turn: ", NightWar.turn, file=sys.stderr)
+        NightWar.turn += 1
         NightWar.my_bucks = int(input())  # Your Money
         NightWar.opp_bucks = int(input())  # Opponent Money
         print("my_bucks: ", NightWar.my_bucks, file=sys.stderr)
@@ -83,7 +93,7 @@ class NightWar:
 
         NightWar.active_soldier_count = int(input()) # Total no. of active soldier in the game
         print("active soldier count: ", NightWar.active_soldier_count, file=sys.stderr)
-        self.soldiers = Soldier(NightWar.active_soldier_count)
+        self.soldiers = Soldier(NightWar.active_soldier_count, NightWar.my_id)
         self.soldiers.Update()
 
 
@@ -98,6 +108,8 @@ class NightWar:
         print("WAIT")
 
         #
+    def MoveEvaluate(self):
+        pass
 
 game = NightWar()
 
