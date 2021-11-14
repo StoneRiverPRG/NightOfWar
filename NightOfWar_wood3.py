@@ -8,31 +8,44 @@ def distance(my_x, my_y, opp_x, opp_y):
     return abs(my_x - opp_x) + abs(my_y - opp_y)
 
 class Board:
-	map_size = 0
-	board = []
-	def __init__(self, size):
-		Board.map_size = size
-		for _y in range(size):
-			Board.board.append([0 for _x in range(size)])
+    map_size = 0
+    board = []
+    soldierxy = []
+    def __init__(self, size):
+        Board.map_size = size
+        for _y in range(size):
+            Board.board.append([0 for _x in range(size)])
+            Board.soldierxy.append([0 for _x in range(size)])
 
-	def SetOwnerID(self, block_owner, x, y):
-		Board.board[y][x] = block_owner
+    def SetOwnerID(self, block_owner, x, y):
+        Board.board[y][x] = block_owner
 
-	def GetOwnerID(self, x, y):
-		return (Board.board[y][x])
+    def GetOwnerID(self, x, y):
+        return (Board.board[y][x])
 
-	def isMovable(self, x, y):
-		if 0 <= x <= Board.map_size and 0 <= x <= Board.map_size:
-			return True
-		else:
-			return False
+    def isMovable(self, x, y):
+        Move = False
+        if 0 <= x < Board.map_size and 0 <= y < Board.map_size:
+            if Board.soldierxy[y][x] != 1:
+                Move = True
+        return Move
+
+    def SetSoldierXY(self, XYList):
+        Board.soldierxy = [[0 for _ in range(Board.map_size)] for _ in range(Board.map_size)]
+        if len(XYList):
+            for tp in XYList:
+                x, y = tp
+                Board.soldierxy[y][x] = 1
 
 
-	def PrintBoard(self):
-		print("board", file=sys.stderr)
-		# print(Board.board, file=sys.stderr)
-		for _y in Board.board:
-			print(_y, file=sys.stderr)
+
+    def PrintBoard(self):
+        print("board", file=sys.stderr)
+        # print(Board.board, file=sys.stderr)
+        for _y in Board.board:
+            print(_y, file=sys.stderr)
+        for _y in Board.soldierxy:
+            print(_y, file=sys.stderr)
 
 class Soldier:
     soldier_count = 0
@@ -53,6 +66,7 @@ class Soldier:
         # level: Level of the soldier ignore for first league
         # direction: The side where the soldier is facing 0 = UP, 1 = LEFT , 2 = DOWN, 3 = RIGHT
             owner_id, x, y, soldier_id, level, direction = [int(j) for j in input().split()]
+            # my と opp でdict 振り分け
             if owner_id == Soldier._my_id:
                 Soldier.my_soldiers[soldier_id] = [owner_id, x, y, level, direction]
             else:
@@ -62,8 +76,25 @@ class Soldier:
         print(Soldier.my_soldiers, file=sys.stderr)
         print(Soldier.opp_soldiers, file=sys.stderr)
 
-    def GetSoldierDict(self):
+    def GetMySoldierDict(self):
         return Soldier.my_soldiers
+
+    def GetOppSoldierDict(self):
+        return Soldier.opp_soldiers
+
+    def GetSoldierXYList(self):
+        XYList = []
+        #TODO: get xy (my and opp)
+        for v in Soldier.my_soldiers.values():
+            x = v[1]
+            y = v[2]
+            XYList.append((x, y))
+        for v in Soldier.opp_soldiers.values():
+            x = v[1]
+            y = v[2]
+            XYList.append((x, y))
+        print(f"XYList {XYList}", file=sys.stderr)
+        return XYList
 
 
 class NightWar:
@@ -90,6 +121,8 @@ class NightWar:
         NightWar.opp_bucks = int(input())  # Opponent Money
         print("my_bucks: ", NightWar.my_bucks, file=sys.stderr)
         print("opp_bucks: ", NightWar.opp_bucks, file=sys.stderr)
+
+        # TODO: 関数化
         if NightWar.my_bucks >= 35:
             NightWar.isAttack = True
 
@@ -106,6 +139,7 @@ class NightWar:
         print("active soldier count: ", NightWar.active_soldier_count, file=sys.stderr)
         self.soldiers = Soldier(NightWar.active_soldier_count, NightWar.my_id)
         self.soldiers.Update()
+        NightWar.board.SetSoldierXY(self.soldiers.GetSoldierXYList())
 
 
     def Game(self):
@@ -116,10 +150,27 @@ class NightWar:
         # Write an action using print
         # To debug: print("Debug messages...", file=sys.stderr, flush=True)
         # print any of actions - WAIT | MOVE <soldierId> <direction> | ATTACK <soldierID> <soldierId to attack on> | LATER > UPGRADE <id> | DEGRADE <opponent id> | SUICIDE <id>
-        print("WAIT")
+
+        # move random
+        for mysoldid, v in self.soldiers.GetMySoldierDict().items():
+            print(f"v = {v}", file=sys.stderr)
+            own, x, y, lv, _dir = v
+            if NightWar.board.isMovable(x, y + 1):
+                print(f"MOVE {mysoldid} DOWN")
+            elif NightWar.board.isMovable(x + 1, y):
+                print(f"MOVE {mysoldid} RIGHT")
+            elif NightWar.board.isMovable(x - 1, y):
+                print(f"MOVE {mysoldid} LEFT")
+            elif NightWar.board.isMovable(x, y -1):
+                print(f"MOVE {mysoldid} UP")
+            else:
+                print("WAIT")
 
         #
     def MoveEvaluate(self):
+        pass
+
+    def isAttackable(self):
         pass
 
 game = NightWar()
