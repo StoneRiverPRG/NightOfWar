@@ -141,16 +141,17 @@ class NightWar:
         self.soldiers.Update()
         NightWar.board.SetSoldierXY(self.soldiers.GetSoldierXYList())
 
-    def isMovable(self, x, y):
+    def isMovable(self,own_x, own_y, x, y, direction):
         isMove = False
 
-        for mysoldid, v in self.soldiers.GetMySoldierDict().items():
-            own_id, own_x, own_y, lv, direction = v
-            if NightWar.board.isMovable(x, y):
-                if abs(x - own_x) == 1 and abs(y - own_y) == 0:
-                    isMove = True
-                elif abs(x - own_x) == 0 and abs(y - own_y) == 1:
-                    isMove = True
+#        for mysoldid, v in self.soldiers.GetMySoldierDict().items():
+#            own_id, own_x, own_y, lv, direction = v
+            # BUG: #2 own_id毎のown_x, own_yが考慮されていない
+        if NightWar.board.isMovable(x, y):
+            if abs(x - own_x) == 1 and abs(y - own_y) == 0:
+                isMove = True
+            elif abs(x - own_x) == 0 and abs(y - own_y) == 1:
+                isMove = True
         return isMove
 
     def Game(self):
@@ -166,9 +167,9 @@ class NightWar:
         for mysoldid, v in self.soldiers.GetMySoldierDict().items():
             print(f"v = {v}", file=sys.stderr)
             own, x, y, lv, direction = v
-            if NightWar.isMovable(self, x, y + 1):
+            if NightWar.isMovable(self,x, y, x, y + 1, direction):
                 print(f"MOVE {mysoldid} DOWN")
-            elif NightWar.isMovable(self, x + 1, y):
+            elif NightWar.isMovable(self, x, y, x + 1, y, direction):
                 print(f"MOVE {mysoldid} RIGHT")
 #            if NightWar.board.isMovable(x, y + 1):
 #                print(f"MOVE {mysoldid} DOWN")
