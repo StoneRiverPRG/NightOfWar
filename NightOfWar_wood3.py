@@ -84,7 +84,7 @@ class Soldier:
 
     def GetSoldierXYList(self):
         XYList = []
-        #TODO: get xy (my and opp)
+        # get xy (my and opp)
         for v in Soldier.my_soldiers.values():
             x = v[1]
             y = v[2]
@@ -141,6 +141,17 @@ class NightWar:
         self.soldiers.Update()
         NightWar.board.SetSoldierXY(self.soldiers.GetSoldierXYList())
 
+    def isMovable(self, x, y):
+        isMove = False
+
+        for mysoldid, v in self.soldiers.GetMySoldierDict().items():
+            own_id, own_x, own_y, lv, direction = v
+            if NightWar.board.isMovable(x, y):
+                if abs(x - own_x) == 1 and abs(y - own_y) == 0:
+                    isMove = True
+                elif abs(x - own_x) == 0 and abs(y - own_y) == 1:
+                    isMove = True
+        return isMove
 
     def Game(self):
         self.Update()
@@ -154,15 +165,19 @@ class NightWar:
         # move random
         for mysoldid, v in self.soldiers.GetMySoldierDict().items():
             print(f"v = {v}", file=sys.stderr)
-            own, x, y, lv, _dir = v
-            if NightWar.board.isMovable(x, y + 1):
+            own, x, y, lv, direction = v
+            if NightWar.isMovable(self, x, y + 1):
                 print(f"MOVE {mysoldid} DOWN")
-            elif NightWar.board.isMovable(x + 1, y):
+            elif NightWar.isMovable(self, x + 1, y):
                 print(f"MOVE {mysoldid} RIGHT")
-            elif NightWar.board.isMovable(x - 1, y):
-                print(f"MOVE {mysoldid} LEFT")
-            elif NightWar.board.isMovable(x, y -1):
-                print(f"MOVE {mysoldid} UP")
+#            if NightWar.board.isMovable(x, y + 1):
+#                print(f"MOVE {mysoldid} DOWN")
+#            elif NightWar.board.isMovable(x + 1, y):
+#                print(f"MOVE {mysoldid} RIGHT")
+#            elif NightWar.board.isMovable(x - 1, y):
+#                print(f"MOVE {mysoldid} LEFT")
+#            elif NightWar.board.isMovable(x, y -1):
+#                print(f"MOVE {mysoldid} UP")
             else:
                 print("WAIT")
 
