@@ -1,6 +1,10 @@
 import sys
 import math
 
+# wood 2 league start.
+# Summary of new rules
+# Now you can upgrade your soldier's level! See the updated statement for details.
+
 # Jrke's special
 # -Kill your enemy soldiers or Have more bucks than your enemy at end of game
 
