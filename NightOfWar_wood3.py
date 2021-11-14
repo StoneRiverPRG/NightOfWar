@@ -21,6 +21,13 @@ class Board:
 	def GetOwnerID(self, x, y):
 		return (Board.board[y][x])
 
+	def isMovable(self, x, y):
+		if 0 <= x <= Board.map_size and 0 <= x <= Board.map_size:
+			return True
+		else:
+			return False
+
+
 	def PrintBoard(self):
 		print("board", file=sys.stderr)
 		# print(Board.board, file=sys.stderr)
@@ -65,6 +72,7 @@ class NightWar:
     board = Board(map_size)
     my_bucks = 0
     opp_bucks = 0
+    isAttack = False
     #block_owner = 0
     active_soldier_count = 0
     turn = 1
@@ -82,6 +90,8 @@ class NightWar:
         NightWar.opp_bucks = int(input())  # Opponent Money
         print("my_bucks: ", NightWar.my_bucks, file=sys.stderr)
         print("opp_bucks: ", NightWar.opp_bucks, file=sys.stderr)
+        if NightWar.my_bucks >= 35:
+            NightWar.isAttack = True
 
         for i in range(NightWar.map_size):
             for j in range(NightWar.map_size):
