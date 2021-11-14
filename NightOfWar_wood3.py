@@ -53,6 +53,7 @@ class Soldier:
 
         print("Soldier dict", file=sys.stderr)
         print(Soldier.my_soldiers, file=sys.stderr)
+        print(Soldier.opp_soldiers, file=sys.stderr)
 
     def GetSoldierDict(self):
         return Soldier.my_soldiers
