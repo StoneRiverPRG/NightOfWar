@@ -141,12 +141,24 @@ class NightWar:
         self.soldiers.Update()
         NightWar.board.SetSoldierXY(self.soldiers.GetSoldierXYList())
 
+    def GetVariableDir(direction):
+        Dir = {0:(0, -1), 1:(-1, 0), 2:(0, 1), 3:(1, 0)}
+        ValidDir = []
+        for i in range(3):
+            j = direction + i - 1
+            if j < 0:
+                j = j + len(Dir)
+            if j > 3:
+                j = 0
+            ValidDir.append(Dir[j])
+            #print(ValidDir)
+        return ValidDir
+
+
     def isMovable(self,own_x, own_y, x, y, direction):
         isMove = False
 
-#        for mysoldid, v in self.soldiers.GetMySoldierDict().items():
-#            own_id, own_x, own_y, lv, direction = v
-            # BUG: #2 own_id毎のown_x, own_yが考慮されていない
+        #  #2 own_id毎のown_x, own_yが考慮されていない
         if NightWar.board.isMovable(x, y):
             if abs(x - own_x) == 1 and abs(y - own_y) == 0:
                 isMove = True
