@@ -141,7 +141,7 @@ class NightWar:
         self.soldiers.Update()
         NightWar.board.SetSoldierXY(self.soldiers.GetSoldierXYList())
 
-    def GetVariableDir(direction):
+    def GetVariableDir(self, direction):
         Dir = {0:(0, -1), 1:(-1, 0), 2:(0, 1), 3:(1, 0)}
         ValidDir = []
         for i in range(3):
@@ -157,13 +157,15 @@ class NightWar:
 
     def isMovable(self,own_x, own_y, x, y, direction):
         isMove = False
-
-        #  #2 own_id毎のown_x, own_yが考慮されていない
-        if NightWar.board.isMovable(x, y):
-            if abs(x - own_x) == 1 and abs(y - own_y) == 0:
-                isMove = True
-            elif abs(x - own_x) == 0 and abs(y - own_y) == 1:
-                isMove = True
+        diff_tp = ((x - own_x), (y - own_y))
+        print(f"diff_tp : {diff_tp}, {self.GetVariableDir(direction)}", file=sys.stderr)
+        if diff_tp in self.GetVariableDir(direction):
+        #  #2 own_id毎のown_x, own_yが考慮されていない closed.
+            if NightWar.board.isMovable(x, y):
+                if abs(x - own_x) == 1 and abs(y - own_y) == 0:
+                    isMove = True
+                elif abs(x - own_x) == 0 and abs(y - own_y) == 1:
+                    isMove = True
         return isMove
 
     def Game(self):
@@ -183,14 +185,10 @@ class NightWar:
                 print(f"MOVE {mysoldid} DOWN")
             elif NightWar.isMovable(self, x, y, x + 1, y, direction):
                 print(f"MOVE {mysoldid} RIGHT")
-#            if NightWar.board.isMovable(x, y + 1):
-#                print(f"MOVE {mysoldid} DOWN")
-#            elif NightWar.board.isMovable(x + 1, y):
-#                print(f"MOVE {mysoldid} RIGHT")
-#            elif NightWar.board.isMovable(x - 1, y):
-#                print(f"MOVE {mysoldid} LEFT")
-#            elif NightWar.board.isMovable(x, y -1):
-#                print(f"MOVE {mysoldid} UP")
+            elif NightWar.isMovable(self, x, y, x, y - 1, direction):
+                print(f"MOVE {mysoldid} UP")
+            elif NightWar.isMovable(self, x, y, x - 1, y, direction):
+                print(f"MOVE {mysoldid} LEFT")
             else:
                 print("WAIT")
 
